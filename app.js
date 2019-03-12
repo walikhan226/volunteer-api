@@ -4,12 +4,12 @@ const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 //const routes = require('./routes/route');
 const morgan = require('morgan');
+const userRoute = require('./routes/user');
 
 
 //set up express
-app.listen(4000, function () {
-    console.log('now listening for request');
-})
+app.listen(process.env.PORT || 4000);
+console.log("Listening Now");
 
 
 //connect to database
@@ -39,7 +39,7 @@ app.use((res, req, next) => {
 
 
 //using routes
-app.use('/', routes);
+app.use('/', userRoute);
 
 // to make upload folder access
 app.use('/uploads', express.static('uploads'));

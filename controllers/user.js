@@ -19,7 +19,9 @@ exports.User_SignUp = (req, res, next) => {
                     } else {
                         const user = new User({
                             email: req.body.email,
-                            password: hash
+                            password: hash,
+                            name: req.body.name
+
                         });
                         user.save()
                             .then(result => {
@@ -34,7 +36,7 @@ exports.User_SignUp = (req, res, next) => {
             }
         });
 }
-
+//user login
 exports.User_Login = (req, res, next) => {
     User.find({ email: req.body.email })
         .exec()
@@ -47,10 +49,11 @@ exports.User_Login = (req, res, next) => {
                     if (result) {
                         const token = jwt.sign({
                             email: user[0].email,
-                            userId: user[0]._id
+                            userId: user[0]._id,
+                            name: user[0].name
                             //validation of token
                         }, process.env.JWT_KEY, {
-                                expiresIn: "1h"
+                                expiresIn: "1d"
                             });
                         return res.status(200).json({ message: "Auth successful", token: token });
                     }
@@ -75,5 +78,56 @@ exports.User_Deleting = (req, res, next) => {
         .catch(err => {
             console.log(err);
             res.status(500).json({ error: err })
+        });
+}
+
+
+//user upadting name
+exports.User_Updating_name = (req, res, next) => {
+    User.findByIdAndUpdate({ _id: req.params.userId }, req.body.name)
+        .then(result => {
+            User.findOne({ _id: req.params.userId })
+            console.log(result);
+            res.status(200).json({ message: "name updated" });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err });
+        });
+}
+
+
+//user updating password
+exports.User_Updating_password = (req, res, next) => {
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) {
+            return res.status(500).json({ error: err });
+        } else {
+            User.findOneAndUpdate({ _id: req.params.userId }, { password: hash })
+                .then(result => {
+                    User.findOne({ _id: req.params.userId })
+                    console.log(result);
+                    res.status(200).json({ message: "password updated" });
+                }).catch(err => {
+                    console.log(err);
+                    res.status(500).json({ error: err });
+                });
+        }
+    });
+}
+
+
+//user profile
+exports.User_profile = (req, res, next) => {
+    User.findOne({ _id: req.params.userId })
+        .select("name _id")
+        .then(result => {
+            console.log(result);
+            res.status(200).json({ result });
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err });
         });
 }

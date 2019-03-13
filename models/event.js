@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
-const schema = mongoose.Schema;
 
 // creat event schema
-const eventSchema = new schema({
+const eventSchema =  mongoose.Schema({
     name: {
         type: String,
         required: [true, 'name is required']
@@ -12,13 +11,19 @@ const eventSchema = new schema({
         required: [true, 'location is required']
     },
     date: {
-        type: Number,
+        type: String,
         required: [true, 'data is required']
     },
     description: {
         type: String,
         required: [true, 'description is required']
+    },
+    creator: {
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "users"
+        }
     }
 });
-const event = mongoose.model("event", eventSchema);
-module.exports = event;
+
+module.exports = mongoose.model("events", eventSchema);

@@ -11,13 +11,13 @@ router.post('/signup', UserController.User_SignUp);
 router.post("/login", UserController.User_Login);
 
 //delete method to delete exist user
-router.delete("/setting/:userId", UserController.User_Deleting);
+router.delete("/setting/:userId", checkAuth, UserController.User_Deleting);
 //put method to update exist user password
-router.put('/profile/setting/changepassword/:userId',checkAuth,UserController.User_Updating_password);
+router.put('/profile/setting/changepassword/:userId', checkAuth, UserController.User_Updating_password);
 //put method to update exist user name
-router.put('/profile/setting/changename/:userId',checkAuth,UserController.User_Updating_name);
+router.put('/profile/setting/changename/:userId', checkAuth, UserController.User_Updating_name);
 //get method to go profile
-router.get("/profile/:userId",checkAuth,UserController.User_profile);
+router.get("/:userId", checkAuth, UserController.User_profile);
 
 
 module.exports = router

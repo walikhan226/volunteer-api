@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
+    
     email: {
         type: String,
         required: true,
@@ -15,9 +16,20 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
 
-    }
+    },
+    post: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "posts"
+        }
+    ],
 
-
-
+    event: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            // it point to collection
+            ref: "events"
+        }
+    ]
 });
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('users', userSchema);

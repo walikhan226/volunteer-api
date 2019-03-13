@@ -2,10 +2,11 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
-//const routes = require('./routes/route');
 const morgan = require('morgan');
 const userRoute = require('./routes/user');
-
+const eventRoute = require("./routes/event");
+const postRoute = require("./routes/post");
+const commentRoute = require("./routes/comment");
 
 //set up express
 app.listen(process.env.PORT || 4000);
@@ -40,6 +41,9 @@ app.use((res, req, next) => {
 
 //using routes
 app.use('/', userRoute);
+app.use("/", eventRoute);
+app.use('/', postRoute);
+app.use("/",commentRoute);
 
 // to make upload folder access
 app.use('/uploads', express.static('uploads'));

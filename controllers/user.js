@@ -120,7 +120,8 @@ exports.User_Updating_password = (req, res, next) => {
 //user profile
 exports.User_profile = (req, res, next) => {
     User.findOne({ _id: req.params.userId })
-        .select("name _id")
+        .populate("post",'content likes comment')
+        .populate("event",'name location')
         .then(result => {
             console.log(result);
             res.status(200).json({ result });

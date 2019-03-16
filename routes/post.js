@@ -6,7 +6,7 @@ const checkAuth = require('../middleware/check-auth');
 //get method about show all posts in database
 router.get("/home",checkAuth,PostController.home);
 //get method about show single post
-router.get("/:postId",checkAuth,PostController.view_post);
+router.get("/home/:postId",checkAuth,PostController.view_post);
 //post method about make new post
 router.post("/:userId/new",checkAuth,PostController.create_post);
 //put method about update exist post

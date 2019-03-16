@@ -4,7 +4,7 @@ const comment = require("../models/comment");
 
 //view all posts
 exports.home = (req, res, next) => {
-    Post.find({})
+    Post.show()
         .then(result => {
             console.log(result);
             res.status(200).json({ result });
@@ -44,6 +44,8 @@ exports.create_post = (req, res, next) => {
 //view single post
 exports.view_post = (req, res, next) => {
     Post.findOne({ _id: req.params.postId })
+    .populate("creator","name _id",user)
+    .populate("comment","content creator") 
         .then(result => {
             console.log(result);
             res.status(200).json({ result });
@@ -53,6 +55,7 @@ exports.view_post = (req, res, next) => {
             res.status(500).json({ error: err });
         })
 }
+
 
 
 // edit post not done yet

@@ -13,6 +13,8 @@ router.post("/:userId/new",checkAuth,PostController.create_post);
 router.put("/:postId/edit",checkAuth,PostController.edit_post);
 //delete method about delete post
 router.delete("/:userId/:postId/delete",checkAuth,PostController.delete_post);
+//get method about add likes
+router.get("/home/:postId/like",checkAuth,PostController.like);
 
 
 module.exports = router

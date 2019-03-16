@@ -44,8 +44,8 @@ exports.create_post = (req, res, next) => {
 //view single post
 exports.view_post = (req, res, next) => {
     Post.findOne({ _id: req.params.postId })
-    .populate("creator","name _id",user)
-    .populate("comment","content creator") 
+        .populate("creator", "name _id", user)
+        .populate("comment", "content creator")
         .then(result => {
             console.log(result);
             res.status(200).json({ result });
@@ -90,4 +90,21 @@ exports.delete_post = (req, res, next) => {
             console.log(err);
             res.status(500).json({ error: err })
         });
+}
+
+
+//post like
+exports.like = (req, res, next) => {
+    Post.findOne({ _id: req.params.postId })
+        .then(post => {
+            post.likes = post.likes + 1
+            post.save();
+            console.log(post);
+            res.status(201).json({ post });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ Error: err })
+        })
+
 }

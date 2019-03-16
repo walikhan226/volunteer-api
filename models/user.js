@@ -30,6 +30,8 @@ const userSchema = mongoose.Schema({
             // it point to collection
             ref: "events"
         }
-    ]
+    ],
+    followers: [{ type: mongoose.Schema.ObjectId, ref: "users" }],
+    following: [{ type: mongoose.Schema.ObjectId, ref: "users" }]
 });
 module.exports = mongoose.model('users', userSchema);

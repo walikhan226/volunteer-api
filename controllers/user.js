@@ -120,8 +120,8 @@ exports.User_Updating_password = (req, res, next) => {
 //user profile
 exports.User_profile = (req, res, next) => {
     User.findOne({ _id: req.params.userId })
-        .populate("post",'content likes comment')
-        .populate("event",'name location')
+        .populate("post", 'content likes comment')
+        .populate("event", 'name location')
         .then(result => {
             console.log(result);
             res.status(200).json({ result });
@@ -131,4 +131,26 @@ exports.User_profile = (req, res, next) => {
             console.log(err);
             res.status(500).json({ error: err });
         });
+}
+
+
+// follow section uncompleted yet problem of undefined indexOf 
+exports.User_follow = (req, res, next) => {
+    const userA = req.params.auserId;
+    const userB = req.params.buserId;
+    User.findOne({ _id: userB })
+    if (userB.followers.indexOf(userA) === -1) {
+        userB.followers.push(userA);
+        userB.save();
+    }
+    User.findOne({ _id: userA })
+    if (userA.following.indexOf(userB) === -1) {
+        userA.following.push(userB);
+        userA.save();
+    }
+    res.status(200).json({ message: "it done" })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err });
+        })
 }

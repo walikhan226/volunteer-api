@@ -134,21 +134,26 @@ exports.User_profile = (req, res, next) => {
 }
 
 
-// follow section uncompleted yet problem of undefined indexOf 
+// follow section  
 exports.User_follow = (req, res, next) => {
     const userA = req.params.auserId;
     const userB = req.params.buserId;
     User.findOne({ _id: userB })
-    if (userB.followers.indexOf(userA) === -1) {
-        userB.followers.push(userA);
-        userB.save();
-    }
+        .then(result => {
+            if (result.followers.indexOf(userA) === -1) {
+                result.followers.push(userA);
+                result.save();
+            }
+        })
     User.findOne({ _id: userA })
-    if (userA.following.indexOf(userB) === -1) {
-        userA.following.push(userB);
-        userA.save();
-    }
-    res.status(200).json({ message: "it done" })
+        .then(doc => {
+            if (doc.following.indexOf(userB) === -1) {
+                doc.following.push(userB);
+                doc.save();
+            }
+            return res.status(200).json({doc})
+        })
+
         .catch(err => {
             console.log(err);
             res.status(500).json({ error: err });

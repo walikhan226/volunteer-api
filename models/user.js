@@ -27,8 +27,7 @@ const userSchema = mongoose.Schema({
     event: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            // it point to collection
-            ref: "events"
+            ref: "events"     // it point to collection
         }
     ],
     followers: [

@@ -36,6 +36,8 @@ exports.User_SignUp = (req, res, next) => {
             }
         });
 }
+
+
 //user login
 exports.User_Login = (req, res, next) => {
     User.find({ email: req.body.email })
@@ -67,6 +69,7 @@ exports.User_Login = (req, res, next) => {
             res.status(500).json({ error: err });
         });
 }
+
 
 //user deleting
 exports.User_Deleting = (req, res, next) => {
@@ -149,6 +152,33 @@ exports.User_follow = (req, res, next) => {
         .then(doc => {
             if (doc.following.indexOf(userB) === -1) {
                 doc.following.push(userB);
+                doc.save();
+            }
+            return res.status(200).json({doc})
+        })
+
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err });
+        })
+}
+
+
+//unfollow section
+exports.User_unfollow = (req, res, next) => {
+    const userA = req.params.auserId;
+    const userB = req.params.buserId;
+    User.findOne({ _id: userB })
+        .then(result => {
+            if (result.followers.indexOf(userA) !== -1) {
+                result.followers.remove(userA);
+                result.save();
+            }
+        })
+    User.findOne({ _id: userA })
+        .then(doc => {
+            if (doc.following.indexOf(userB) !== -1) {
+                doc.following.remove(userB);
                 doc.save();
             }
             return res.status(200).json({doc})

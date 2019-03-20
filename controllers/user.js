@@ -54,7 +54,7 @@ exports.User_Login = (req, res, next) => {
                             userId: user[0]._id,
                             name: user[0].name
                             //validation of token
-                        }, process.env.JWT_KEY, {
+                        }, 'secert', {
                                 expiresIn: "1d"
                             });
                         return res.status(200).json({ message: "Auth successful", token: token });
@@ -154,7 +154,7 @@ exports.User_follow = (req, res, next) => {
                 doc.following.push(userB);
                 doc.save();
             }
-            return res.status(200).json({doc})
+            return res.status(200).json({ doc })
         })
 
         .catch(err => {
@@ -181,7 +181,7 @@ exports.User_unfollow = (req, res, next) => {
                 doc.following.remove(userB);
                 doc.save();
             }
-            return res.status(200).json({doc})
+            return res.status(200).json({ doc })
         })
 
         .catch(err => {

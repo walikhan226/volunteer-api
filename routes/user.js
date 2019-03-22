@@ -20,5 +20,7 @@ router.get("/:userId", checkAuth, UserController.User_profile);
 router.post("/:auserId/:buserId/follow", checkAuth, UserController.User_follow);
 // get method about unfollow 
 router.get("/:auserId/:buserId/unfollow", checkAuth, UserController.User_unfollow);
+// post method about simple search 
+router.post("/search", checkAuth,UserController.Search);
 
 module.exports = router

@@ -189,3 +189,19 @@ exports.User_unfollow = (req, res, next) => {
             res.status(500).json({ error: err });
         })
 }
+
+
+//simple  search section 
+exports.Search = (req, res, next) => {
+    User.findOne({ name: req.body.name })
+        .then(result => {
+            if (result !== null) {
+                res.status(200).json({ result });
+            } else {
+                res.status(404).json({ message: "Not Found" })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ Error: err })
+        })
+}

@@ -1,10 +1,20 @@
 const Post = require("../models/post");
 const user = require('../models/user');
-const comment = require("../models/comment");
+
 
 //view all posts
 exports.home = (req, res, next) => {
-    Post.show()
+    user.findOne({ _id: req.params.userId })
+        .populate({
+            // get following posts
+            path: "following",
+            populate: {
+                path: "post",
+                populate: {
+                    path: "comment"
+                }
+            }
+        })
         .then(result => {
             console.log(result);
             res.status(200).json({ result });

@@ -43,7 +43,7 @@ app.use((res, req, next) => {
 app.use('/', userRoute);
 app.use("/", eventRoute);
 app.use('/', postRoute);
-app.use("/",commentRoute);
+app.use("/", commentRoute);
 
 // to make upload folder access
 app.use('/uploads', express.static('uploads'));

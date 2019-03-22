@@ -4,22 +4,29 @@ const user = require('../models/user');
 
 //show all event
 exports.get_all_events = (req, res, next) => {
-    Event.find({})
-    .populate("creator","name _id",user) // must define model refrance
+    user.findOne({ _id: req.params.userId })
+        .populate({
+            // get following events
+            path: "following",
+            populate: {
+                path: "event"
+            }
+        })
         .then(result => {
             console.log(result);
             res.status(200).json({ result });
-        }).catch(err => {
+        })
+        .catch(err => {
             console.log(err);
             res.status(500).json({ error: err });
-        });
+        })
 }
 
 
 //show single event
 exports.show_event = (req, res, next) => {
     Event.findOne({ _id: req.params.eventId })
-    .populate("creator","name _id",user) 
+        .populate("creator", "name _id", user)
         .then(result => {
             console.log(result);
             res.status(200).json({ result });

@@ -15,10 +15,10 @@ router.put('/profile/setting/changepassword/:userId', checkAuth, UserController.
 //put method to update exist user name
 router.put('/profile/setting/changename/:userId', checkAuth, UserController.User_Updating_name);
 //get method to go profile
-router.get("/:userId", UserController.User_profile);
+router.get("/:userId", checkAuth, UserController.User_profile);
 // post method about follow
-router.post("/:auserId/:buserId/follow",checkAuth,UserController.User_follow);
+router.post("/:auserId/:buserId/follow", checkAuth, UserController.User_follow);
 // get method about unfollow 
-router.get("/:auserId/:buserId/unfollow",checkAuth,UserController.User_unfollow);
+router.get("/:auserId/:buserId/unfollow", checkAuth, UserController.User_unfollow);
 
 module.exports = router

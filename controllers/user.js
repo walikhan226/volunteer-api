@@ -54,7 +54,7 @@ exports.User_Login = (req, res, next) => {
                             userId: user[0]._id,
                             name: user[0].name
                             //validation of token
-                        }, 'secert', {
+                        }, process.env.JWT_KEY, { //auth problem
                                 expiresIn: "1d"
                             });
                         return res.status(200).json({ message: "Auth successful", token: token });

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const User = require('../models/user');
+const config=require('config')
 
 
 //sign up
@@ -50,11 +51,9 @@ exports.User_Login = (req, res, next) => {
                     }
                     if (result) {
                         const token = jwt.sign({
-                            email: user[0].email,
-                            userId: user[0]._id,
-                            name: user[0].name
+                            userId: user[0]._id
                             //validation of token
-                        }, process.env.JWT_KEY, { //auth problem
+                        },config.get('jwtSecret'), { 
                                 expiresIn: "1d"
                             });
                         return res.status(200).json({ message: "Auth successful", token: token });

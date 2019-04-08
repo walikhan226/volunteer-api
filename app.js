@@ -14,7 +14,7 @@ console.log("Listening Now");
 
 
 //connect to database
-mongoose.connect('mongodb://vv:123asd@ds357955.mlab.com:57955/vv', { useNewUrlParser: true });
+mongoose.connect('mongodb://vv:123asd@ds357955.mlab.com:57955/vv', { useCreateIndex: true, useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
 

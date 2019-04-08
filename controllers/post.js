@@ -2,7 +2,7 @@ const Post = require("../models/post");
 const user = require('../models/user');
 
 
-//view all posts
+//view all posts about what user follow
 exports.home = (req, res, next) => {
     user.findOne({ _id: req.params.userId })
         .populate({
@@ -68,13 +68,23 @@ exports.view_post = (req, res, next) => {
 
 
 
-// edit post not done yet
+// edit post 
 exports.edit_post = (req, res, next) => {
-    Post.findOneAndUpdate({ _id: req.params.postId }, req.body)
-    Post.findOne({ _id: req.params.postId })
+    const userId = req.params.userId;
+    const postId = req.params.postId;
+    Post.findOne({ _id: postId })
         .then(result => {
-            console.log(result);
-            res.status(200).json({ result })
+            if (userId == result.creator._id) {
+                Post.findOneAndUpdate({ _id: postId }, req.body)
+                    .exec()
+                Post.findOne({ _id: postId })
+                    .then(doc => {
+                        console.log(doc);
+                        res.status(200).json({ doc });
+                    })
+            } else {
+                res.status(200).json({ message: "you can't update this post" });
+            }
         })
         .catch(err => {
             console.log(err);
@@ -83,17 +93,19 @@ exports.edit_post = (req, res, next) => {
 }
 
 
-//post deleting not done yet
+//post delete
 exports.delete_post = (req, res, next) => {
-    Post.findOne({ _id: req.params.postId })
-        .then(doc => {
-            if (doc.creator._id === req.params.userId) {
-                Post.findOneAndDelete({ _id: req.params.postId })
+    const userId = req.params.userId;
+    const postId = req.params.postId;
+    Post.findOne({ _id: postId })
+        .then(result => {
+            if (userId == result.creator._id) {
+                Post.findOneAndDelete({ _id: postId })
                     .then(() => {
-                        res.status(200).json({ message: "post deleted" })
+                        res.status(200).json({ message: "post deleted successfully" })
                     })
             } else {
-                res.status(500).json({ message: "you can't delete that" })
+                res.status(200).json({ message: "you can't delete that" })
             }
         })
         .catch(err => {
@@ -118,3 +130,4 @@ exports.like = (req, res, next) => {
         })
 
 }
+// all work great without error test 8/4/2019

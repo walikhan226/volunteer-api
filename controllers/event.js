@@ -2,9 +2,11 @@ const Event = require("../models/event");
 const user = require('../models/user');
 
 
-//show all event about what user follow
+//show all event about what user follow have some problem
+// it not represent what needed
 exports.get_all_events = (req, res, next) => {
-    user.findOne({ _id: req.params.userId })
+    const userId = req.body.id
+    user.findOne({ _id: userId })
         .populate({
             // get following events
             path: "following",
@@ -12,8 +14,11 @@ exports.get_all_events = (req, res, next) => {
                 path: "event"
             }
         })
+        .populate("event")
+        .exec()
         .then(result => {
-            console.log(result);
+            console.log(typeof (result.following));
+
             res.status(200).json({ result });
         })
         .catch(err => {
@@ -25,7 +30,8 @@ exports.get_all_events = (req, res, next) => {
 
 //show single event
 exports.show_event = (req, res, next) => {
-    Event.findOne({ _id: req.params.eventId })
+    const eventId = req.body.eventId
+    Event.findOne({ _id: eventId })
         .populate("creator", "name _id", user)
         .then(result => {
             console.log(result);
@@ -45,16 +51,17 @@ exports.create_new_event = (req, res, next) => {
         location: req.body.location,
         date: req.body.date,
         description: req.body.description,
-        creator: req.params.userId
+        creator: req.body.id
     })
-    user.findOne({ _id: req.params.userId })
+    user.findOne({ _id: req.body.id })
+        .exec()
         .then(result => {
             event.creator = result;
             event.save();
             result.event.push(event);
             result.save();
             console.log("done");
-            res.status(200).json({ result });
+            res.status(200).json({ event });
         })
         .catch(err => {
             console.log(err);
@@ -65,14 +72,14 @@ exports.create_new_event = (req, res, next) => {
 
 // update event 
 exports.event_edit = (req, res, next) => {
-    const eventId = req.params.eventId;
-    const userId = req.params.userId;
+    const eventId = req.body.eventId;
+    const userId = req.body.id;
     Event.findOne({ _id: eventId })
         .then(result => {
             if (userId == result.creator._id) {
                 Event.findOneAndUpdate({ _id: eventId }, req.body)
-                .exec()
-                Event.findOne({_id:eventId})
+                    .exec()
+                Event.findOne({ _id: eventId })
                     .then(doc => {
                         console.log(doc);
                         res.status(200).json({ doc });
@@ -90,15 +97,15 @@ exports.event_edit = (req, res, next) => {
 
 //delete event 
 exports.event_delete = (req, res, next) => {
-    const eventId = req.params.eventId;
-    const userId = req.params.userId;
+    const eventId = req.body.eventId;
+    const userId = req.body.id;
     Event.findOne({ _id: eventId })
         .then(result => {
             if (userId == result.creator._id) {
                 Event.findOneAndDelete({ _id: eventId })
                     .then(() => {
                         console.log(" the event deleted");
-                        res.status(200).json({message:"the event deleted successfully"  });
+                        res.status(200).json({ message: "the event deleted successfully" });
                     })
             } else {
                 res.status(401).json({ message: "you can't delete this event" });
@@ -110,3 +117,4 @@ exports.event_delete = (req, res, next) => {
         })
 }
 // until now there is noError all work great test 8/4/2019
+// some problem in view all events as we need keep search for solution (get_all_event) start from line 7

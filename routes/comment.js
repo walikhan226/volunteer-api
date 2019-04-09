@@ -4,7 +4,7 @@ const commentController = require("../controllers/comment");
 const checkAuth = require('../middleware/check-auth');
 
 //post method about add comment on exist post
-router.post("/home/:userId/:postId/new", checkAuth, commentController.create_comment);
+router.post("/home/single/newcomment", checkAuth, commentController.create_comment);
 
 
 

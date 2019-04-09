@@ -2,9 +2,10 @@ const Post = require("../models/post");
 const user = require('../models/user');
 
 
-//view all posts about what user follow
+//view all posts about what user follow without testing same problem from events line 7
 exports.home = (req, res, next) => {
-    user.findOne({ _id: req.params.userId })
+    const userId = req.body.id;
+    user.findOne({ _id: userId })
         .populate({
             // get following posts
             path: "following",
@@ -15,6 +16,8 @@ exports.home = (req, res, next) => {
                 }
             }
         })
+        .populate("post")
+        .exec()
         .then(result => {
             console.log(result);
             res.status(200).json({ result });
@@ -28,21 +31,22 @@ exports.home = (req, res, next) => {
 
 //creat new post
 exports.create_post = (req, res, next) => {
+    const userId = req.body.id;
     const post = new Post({
         content: req.body.content,
         likes: 0,
-        creator: req.params.userId
+        creator: req.body.id
     })
-    user.findOne({ _id: req.params.userId })
+    user.findOne({ _id: userId })
+        .exec()
         .then(result => {
             post.creator = result;
             post.save();
             result.post.push(post);
             result.save();
             console.log("done");
-            res.status(200).json({ result });
+            res.status(200).json({ post });
         })
-
         .catch(err => {
             console.log(err);
             res.status(500).json({ error: err });
@@ -53,9 +57,10 @@ exports.create_post = (req, res, next) => {
 
 //view single post
 exports.view_post = (req, res, next) => {
-    Post.findOne({ _id: req.params.postId })
+    const postId = req.body.postId;
+    Post.findOne({ _id: postId })
         .populate("creator", "name _id", user)
-        .populate("comment", "content creator")
+        .populate("comment", "content creator name")
         .then(result => {
             console.log(result);
             res.status(200).json({ result });
@@ -70,8 +75,8 @@ exports.view_post = (req, res, next) => {
 
 // edit post 
 exports.edit_post = (req, res, next) => {
-    const userId = req.params.userId;
-    const postId = req.params.postId;
+    const userId = req.body.id;
+    const postId = req.body.postId;
     Post.findOne({ _id: postId })
         .then(result => {
             if (userId == result.creator._id) {
@@ -95,8 +100,8 @@ exports.edit_post = (req, res, next) => {
 
 //post delete
 exports.delete_post = (req, res, next) => {
-    const userId = req.params.userId;
-    const postId = req.params.postId;
+    const userId = req.body.id;
+    const postId = req.body.postId;
     Post.findOne({ _id: postId })
         .then(result => {
             if (userId == result.creator._id) {
@@ -117,7 +122,8 @@ exports.delete_post = (req, res, next) => {
 
 //post like
 exports.like = (req, res, next) => {
-    Post.findOne({ _id: req.params.postId })
+    const postId=req.body.postId;
+    Post.findOne({ _id: postId })
         .then(post => {
             post.likes = post.likes + 1
             post.save();
@@ -131,3 +137,4 @@ exports.like = (req, res, next) => {
 
 }
 // all work great without error test 8/4/2019
+// same problem with represent data in line 5 (home)

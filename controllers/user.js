@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const User = require('../models/user');
-const config=require('config')
+const config = require('config')
 
 
 //sign up
@@ -53,10 +53,10 @@ exports.User_Login = (req, res, next) => {
                         const token = jwt.sign({
                             userId: user[0]._id
                             //validation of token
-                        },config.get('jwtSecret'), { 
+                        }, config.get('jwtSecret'), {
                                 expiresIn: "1d"
                             });
-                        return res.status(200).json({ message: "Auth successful", token: token });
+                        return res.status(200).json({ message: "Auth successful", token: token, ID: user[0]._id });
                     }
                     return res.status(401).json({ message: "Auth Failed" });
                 })
@@ -72,7 +72,7 @@ exports.User_Login = (req, res, next) => {
 
 //user deleting
 exports.User_Deleting = (req, res, next) => {
-    User.findOneAndDelete({ _id: req.params.userId })
+    User.findOneAndDelete({ _id: req.body.id })
         .exec()
         .then(() => {
             res.status(200).json({ message: "user deleted" })
@@ -86,11 +86,13 @@ exports.User_Deleting = (req, res, next) => {
 
 //user upadting name
 exports.User_Updating_name = (req, res, next) => {
-    User.findByIdAndUpdate({ _id: req.params.userId }, req.body.name)
-        .then(result => {
-            User.findOne({ _id: req.params.userId })
-            console.log(result);
-            res.status(200).json({ message: "name updated" });
+    const userId = req.body.id
+    User.findOneAndUpdate({ _id: userId }, {name:req.body.name})
+        .exec()
+        User.findOne({_id:userId})
+        .then(doc => {
+            console.log(doc)
+            res.status(200).json({ message: "name changed successfully"});
         })
         .catch(err => {
             console.log(err);
@@ -101,15 +103,17 @@ exports.User_Updating_name = (req, res, next) => {
 
 //user updating password
 exports.User_Updating_password = (req, res, next) => {
+    const userId = req.body.id
     bcrypt.hash(req.body.password, 10, (err, hash) => {
         if (err) {
             return res.status(500).json({ error: err });
         } else {
-            User.findOneAndUpdate({ _id: req.params.userId }, { password: hash })
+            User.findOneAndUpdate({ _id: userId }, { password: hash })
+                .exec()
                 .then(result => {
-                    User.findOne({ _id: req.params.userId })
+                    User.findOne({ _id: userId })
                     console.log(result);
-                    res.status(200).json({ message: "password updated" });
+                    res.status(200).json({ message: "password changed" });
                 }).catch(err => {
                     console.log(err);
                     res.status(500).json({ error: err });
@@ -121,13 +125,17 @@ exports.User_Updating_password = (req, res, next) => {
 
 //user profile
 exports.User_profile = (req, res, next) => {
-    User.findOne({ _id: req.params.userId })
+    User.findOne({ _id: req.body.id })
         .populate("post", 'content likes comment')
         .populate("event", 'name location')
-        .then(result => {
+        .then((result) => {
             console.log(result);
-            res.status(200).json({ result });
-
+            res.status(200).json({
+                name: result.name,
+                id: result.id,
+                post: result.post,
+                event: result.event
+            });
         })
         .catch(err => {
             console.log(err);
@@ -138,8 +146,8 @@ exports.User_profile = (req, res, next) => {
 
 // follow section  
 exports.User_follow = (req, res, next) => {
-    const userA = req.params.auserId;
-    const userB = req.params.buserId;
+    const userA = req.body.id;
+    const userB = req.body.followId;
     User.findOne({ _id: userB })
         .then(result => {
             if (result.followers.indexOf(userA) === -1) {
@@ -165,8 +173,8 @@ exports.User_follow = (req, res, next) => {
 
 //unfollow section
 exports.User_unfollow = (req, res, next) => {
-    const userA = req.params.auserId;
-    const userB = req.params.buserId;
+    const userA = req.body.id; 
+    const userB = req.body.unfollowId;
     User.findOne({ _id: userB })
         .then(result => {
             if (result.followers.indexOf(userA) !== -1) {

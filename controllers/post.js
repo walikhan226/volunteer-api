@@ -122,7 +122,7 @@ exports.delete_post = (req, res, next) => {
 
 //post like
 exports.like = (req, res, next) => {
-    const postId=req.body.postId;
+    const postId = req.body.postId;
     Post.findOne({ _id: postId })
         .then(post => {
             post.likes = post.likes + 1
@@ -136,5 +136,23 @@ exports.like = (req, res, next) => {
         })
 
 }
+exports.share = (req, res, next) => {
+    const postId = req.body.postId;
+    const userId = req.body.id;
+    user.findOne({ _id:userId })
+        .exec()
+        .then(result => {
+            console.log(result);
+            result.post.push(postId);
+            result.save();
+            console.log("it done");
+            res.status(200).json({ result });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ err });
+        })
+}
 // all work great without error test 8/4/2019
 // same problem with represent data in line 5 (home)
+//share section need some improving -_-

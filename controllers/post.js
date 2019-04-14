@@ -16,8 +16,31 @@ exports.home = (req, res, next) => {
                 }
             }
         })
-        .populate("post")
         .exec()
+        .then(result => {
+            let resd = []
+            resd[0] = result;
+            let red = resd.map((object) => {
+                console.log(object.following[0].post)
+                return {
+                    "postsOfFollowing": object.following[0].post,
+                }
+            })
+            res.status(200).json({ red });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err });
+        })
+}
+
+
+//view single post
+exports.view_post = (req, res, next) => {
+    const postId = req.body.postId;
+    Post.findOne({ _id: postId })
+        .populate("comment", "content creator name")
+        .populate("creator","name",user)
         .then(result => {
             console.log(result);
             res.status(200).json({ result });
@@ -35,7 +58,8 @@ exports.create_post = (req, res, next) => {
     const post = new Post({
         content: req.body.content,
         likes: 0,
-        creator: req.body.id
+        creator: req.body.id,
+        image:req.body.image
     })
     user.findOne({ _id: userId })
         .exec()
@@ -53,24 +77,6 @@ exports.create_post = (req, res, next) => {
         })
 
 }
-
-
-//view single post
-exports.view_post = (req, res, next) => {
-    const postId = req.body.postId;
-    Post.findOne({ _id: postId })
-        .populate("creator", "name _id", user)
-        .populate("comment", "content creator name")
-        .then(result => {
-            console.log(result);
-            res.status(200).json({ result });
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({ error: err });
-        })
-}
-
 
 
 // edit post 
@@ -139,7 +145,7 @@ exports.like = (req, res, next) => {
 exports.share = (req, res, next) => {
     const postId = req.body.postId;
     const userId = req.body.id;
-    user.findOne({ _id:userId })
+    user.findOne({ _id: userId })
         .exec()
         .then(result => {
             console.log(result);
@@ -153,6 +159,3 @@ exports.share = (req, res, next) => {
             res.status(500).json({ err });
         })
 }
-// all work great without error test 8/4/2019
-// same problem with represent data in line 5 (home)
-//share section need some improving -_-

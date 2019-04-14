@@ -3,7 +3,6 @@ const user = require('../models/user');
 
 
 //show all event about what user follow have some problem
-// it not represent what needed
 exports.get_all_events = (req, res, next) => {
     const userId = req.body.id
     user.findOne({ _id: userId })
@@ -14,12 +13,17 @@ exports.get_all_events = (req, res, next) => {
                 path: "event"
             }
         })
-        .populate("event")
         .exec()
         .then(result => {
-            console.log(typeof (result.following));
-
-            res.status(200).json({ result });
+            let resd = []
+            resd[0] = result;
+            let red = resd.map((object) => {
+                console.log(object.following[0].event)
+                return {
+                    "eventsOfFollowing": object.following[0].event,
+                }
+            })
+            res.status(200).json({ red });
         })
         .catch(err => {
             console.log(err);
@@ -44,6 +48,23 @@ exports.show_event = (req, res, next) => {
 }
 
 
+// get my events
+exports.myEvent = (req, res, next) => {
+    const userId = req.body.id;
+    user.findOne({ _id: userId })
+    .populate('event','name location description date image')
+        .exec()
+        .then(result => {
+            console.log(result),
+                res.status(200).json({ events: result.event })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err })
+        })
+}
+
+
 //create new event
 exports.create_new_event = (req, res, next) => {
     const event = new Event({
@@ -51,7 +72,8 @@ exports.create_new_event = (req, res, next) => {
         location: req.body.location,
         date: req.body.date,
         description: req.body.description,
-        creator: req.body.id
+        creator: req.body.id,
+        image: req.body.image
     })
     user.findOne({ _id: req.body.id })
         .exec()
@@ -116,5 +138,3 @@ exports.event_delete = (req, res, next) => {
             res.status(500).json({ error: err });
         })
 }
-// until now there is noError all work great test 8/4/2019
-// some problem in view all events as we need keep search for solution (get_all_event) start from line 7

@@ -12,6 +12,12 @@ const commentSchema = mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "posts"
+        },
+    ],
+    comment: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "posts" // it gona be changed to comments but i have now some issue
         }
     ]
 });

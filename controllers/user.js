@@ -70,29 +70,33 @@ exports.User_Login = (req, res, next) => {
 }
 
 
-//user deleting
-exports.User_Deleting = (req, res, next) => {
-    User.findOneAndDelete({ _id: req.body.id })
+//adding image to user
+exports.avatar = (req, res, next) => {
+    const userId = req.body.id;
+    User.findOneAndUpdate({ _id: userId }, { avatar: req.body.image })
         .exec()
-        .then(() => {
-            res.status(200).json({ message: "user deleted" })
+    User.findOne({ _id: userId })
+        .then(result => {
+            console.log(result);
+            res.status(200).json({ message: "photo is added" });
         })
         .catch(err => {
             console.log(err);
-            res.status(500).json({ error: err })
-        });
+            res.status(500).json({ error: err });
+
+        })
 }
 
 
 //user upadting name
 exports.User_Updating_name = (req, res, next) => {
     const userId = req.body.id
-    User.findOneAndUpdate({ _id: userId }, {name:req.body.name})
+    User.findOneAndUpdate({ _id: userId }, { name: req.body.name })
         .exec()
-        User.findOne({_id:userId})
+    User.findOne({ _id: userId })
         .then(doc => {
             console.log(doc)
-            res.status(200).json({ message: "name changed successfully"});
+            res.status(200).json({ message: "name changed successfully" });
         })
         .catch(err => {
             console.log(err);
@@ -127,20 +131,58 @@ exports.User_Updating_password = (req, res, next) => {
 exports.User_profile = (req, res, next) => {
     User.findOne({ _id: req.body.id })
         .populate("post", 'content likes comment')
-        .populate("event", 'name location')
+        .populate("event", 'name location date')
         .then((result) => {
             console.log(result);
             res.status(200).json({
                 name: result.name,
+                avatar: result.avatar,
                 id: result.id,
                 post: result.post,
-                event: result.event
+                event: result.event,
+                following: result.following,
+                followed: result.followers
             });
         })
         .catch(err => {
             console.log(err);
             res.status(500).json({ error: err });
         });
+}
+
+
+// get following list
+exports.following = (req, res, next) => {
+    const userId = req.body.id;
+    User.findOne({ _id: userId })
+        .populate("following", 'name ')
+        .exec()
+        .then(result => {
+            console.log(result);
+            res.status(200).json({ result: result.following })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err });
+        })
+}
+
+
+//get followed list
+exports.followers = (req, res, next) => {
+    const userId = req.body.id;
+    User.findOne({ _id: userId })
+        .populate("followers", "name")
+        .exec()
+        .then(result => {
+            console.log(result);
+            res.status(200).json({ result: result.followers });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err });
+        })
 }
 
 
@@ -173,7 +215,7 @@ exports.User_follow = (req, res, next) => {
 
 //unfollow section
 exports.User_unfollow = (req, res, next) => {
-    const userA = req.body.id; 
+    const userA = req.body.id;
     const userB = req.body.unfollowId;
     User.findOne({ _id: userB })
         .then(result => {
@@ -211,4 +253,18 @@ exports.Search = (req, res, next) => {
         .catch(err => {
             res.status(500).json({ Error: err })
         })
+}
+
+
+//user deleting
+exports.User_Deleting = (req, res, next) => {
+    User.findOneAndDelete({ _id: req.body.id })
+        .exec()
+        .then(() => {
+            res.status(200).json({ message: "user deleted" })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err })
+        });
 }

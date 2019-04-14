@@ -3,8 +3,10 @@ const router = express.Router();
 const EventController = require("../controllers/event");
 const checkAuth = require('../middleware/check-auth');
 
-//get method about show all event in database
+//get method about show all event 
 router.get('/events', checkAuth, EventController.get_all_events);
+//get method about show user events
+router.get('/myevents', checkAuth, EventController.myEvent);
 //get method about show single event
 router.get("/events/single", checkAuth, EventController.show_event);
 //post method about make new event
@@ -15,4 +17,3 @@ router.put("/events/single/edit", checkAuth, EventController.event_edit);
 router.delete("/events/single/delete", checkAuth, EventController.event_delete);
 
 module.exports = router
-// all done  (search for solution for line 7) test json to know where the issue

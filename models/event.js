@@ -23,6 +23,10 @@ const eventSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "users"
         }
+    },
+    image: {
+        type: String,
+        required: [true, 'photo of event is required']
     }
 });
 

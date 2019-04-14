@@ -41,6 +41,7 @@ const userSchema = mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: "users"
         }
-    ]
+    ],
+    avatar: String
 });
 module.exports = mongoose.model('users', userSchema);

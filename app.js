@@ -45,9 +45,6 @@ app.use("/", eventRoute);
 app.use('/', postRoute);
 app.use("/", commentRoute);
 
-// to make upload folder access
-app.use('/uploads', express.static('uploads'));
-
 
 //middleware for error handling
 app.use((req, res, next) => {

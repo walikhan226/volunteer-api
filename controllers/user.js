@@ -141,7 +141,7 @@ exports.User_profile = (req, res, next) => {
                 post: result.post,
                 event: result.event,
                 following: result.following,
-                followedrs: result.followers
+                followers: result.followers
             });
         })
         .catch(err => {

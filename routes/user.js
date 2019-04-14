@@ -5,9 +5,9 @@ const checkAuth = require('../middleware/check-auth');
 
 
 // post method to creat new user 
-router.post('/signup', checkAuth, UserController.User_SignUp);
+router.post('/signup', UserController.User_SignUp);
 //post method to login
-router.post("/login", checkAuth, UserController.User_Login);
+router.post("/login", UserController.User_Login);
 //delete method to delete exist user
 router.delete("/setting/delete", checkAuth, UserController.User_Deleting);
 //put method to update exist user password

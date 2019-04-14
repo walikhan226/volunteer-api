@@ -21,7 +21,7 @@ router.post("/follow", checkAuth, UserController.User_follow);
 // get method about unfollow 
 router.get("/unfollow", checkAuth, UserController.User_unfollow);
 // post method about simple search 
-router.post("/search", UserController.Search);
+router.post("/search", checkAuth,UserController.Search);
 //post method about adding image to user
 router.post("/avatar", checkAuth, UserController.avatar);
 //get method about view list of following

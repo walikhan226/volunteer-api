@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const User = require('../models/user');
-const config = require('config')
+const config = require('config');
+
 
 
 //sign up
@@ -129,7 +130,7 @@ exports.User_Updating_password = (req, res, next) => {
 
 //user profile
 exports.User_profile = (req, res, next) => {
-    const id=req.params.id;
+const id = req.query.id
     User.findOne({ _id: id })
         .populate("post", 'content likes comment')
         .populate("event", 'name location date')
@@ -155,7 +156,7 @@ exports.User_profile = (req, res, next) => {
 
 // get following list
 exports.following = (req, res, next) => {
-    const userId = req.params.id;
+    const userId = req.query.id;
     User.findOne({ _id: userId })
         .populate("following", 'name ')
         .exec()
@@ -173,7 +174,7 @@ exports.following = (req, res, next) => {
 
 //get followed list
 exports.followers = (req, res, next) => {
-    const userId = req.params.id;
+    const userId = req.query.id;
     User.findOne({ _id: userId })
         .populate("followers", "name")
         .exec()
@@ -260,7 +261,7 @@ exports.Search = (req, res, next) => {
 
 //user deleting
 exports.User_Deleting = (req, res, next) => {
-    User.findOneAndDelete({ _id: req.params.id })
+    User.findOneAndDelete({ _id: req.query.id })
         .exec()
         .then(() => {
             res.status(200).json({ message: "user deleted" })

@@ -4,7 +4,7 @@ const user = require('../models/user');
 
 //show all event about what user follow have some problem
 exports.get_all_events = (req, res, next) => {
-    const userId = req.params.id
+    const userId = req.query.id
     user.findOne({ _id: userId })
         .populate({
             // get following events
@@ -34,7 +34,7 @@ exports.get_all_events = (req, res, next) => {
 
 //show single event
 exports.show_event = (req, res, next) => {
-    const eventId = req.params.eventId
+    const eventId = req.query.eventId
     Event.findOne({ _id: eventId })
         .populate("creator", "name _id", user)
         .then(result => {
@@ -50,7 +50,7 @@ exports.show_event = (req, res, next) => {
 
 // get my events
 exports.myEvent = (req, res, next) => {
-    const userId = req.params.id;
+    const userId = req.query.id;
     user.findOne({ _id: userId })
         .populate('event', 'name location description date image')
         .exec()
@@ -245,7 +245,7 @@ exports.interested = (req, res, next) => {
 
 //show going list
 exports.get_going = (req, res, next) => {
-    const eventId = req.params.eventId
+    const eventId = req.query.eventId
     Event.findOne({ _id: eventId })
         .populate("going", "name avatar")
         .then(result => {
@@ -261,7 +261,7 @@ exports.get_going = (req, res, next) => {
 
 //show interested list
 exports.get_interested = (req, res, next) => {
-    const eventId = req.params.eventId
+    const eventId = req.query.eventId
     Event.findOne({ _id: eventId })
         .populate("interested", "name avatar")
         .then(result => {
@@ -277,7 +277,7 @@ exports.get_interested = (req, res, next) => {
 
 //show notinterested list
 exports.get_not_interested = (req, res, next) => {
-    const eventId = req.params.eventId
+    const eventId = req.query.eventId
     Event.findOne({ _id: eventId })
         .populate("not_interested", "name avatar")
         .then(result => {

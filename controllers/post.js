@@ -4,7 +4,7 @@ const user = require('../models/user');
 
 //view all posts about what user follow without testing same problem from events line 7
 exports.home = (req, res, next) => {
-    const userId = req.body.id;
+    const userId = req.params.id;
     user.findOne({ _id: userId })
         .populate({
             // get following posts
@@ -37,7 +37,7 @@ exports.home = (req, res, next) => {
 
 //view single post
 exports.view_post = (req, res, next) => {
-    const postId = req.body.postId;
+    const postId = req.params.postId;
     Post.findOne({ _id: postId })
         .populate("comment", "content creator name")
         .populate("creator","name",user)
@@ -128,7 +128,7 @@ exports.delete_post = (req, res, next) => {
 
 //post like
 exports.like = (req, res, next) => {
-    const postId = req.body.postId;
+    const postId = req.params.postId;
     Post.findOne({ _id: postId })
         .then(post => {
             post.likes = post.likes + 1

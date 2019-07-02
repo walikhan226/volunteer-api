@@ -129,7 +129,8 @@ exports.User_Updating_password = (req, res, next) => {
 
 //user profile
 exports.User_profile = (req, res, next) => {
-    User.findOne({ _id: req.body.id })
+    const id=req.params.id;
+    User.findOne({ _id: id })
         .populate("post", 'content likes comment')
         .populate("event", 'name location date')
         .then((result) => {
@@ -146,6 +147,7 @@ exports.User_profile = (req, res, next) => {
         })
         .catch(err => {
             console.log(err);
+            console.log(id);
             res.status(500).json({ error: err });
         });
 }
@@ -153,7 +155,7 @@ exports.User_profile = (req, res, next) => {
 
 // get following list
 exports.following = (req, res, next) => {
-    const userId = req.body.id;
+    const userId = req.params.id;
     User.findOne({ _id: userId })
         .populate("following", 'name ')
         .exec()
@@ -171,7 +173,7 @@ exports.following = (req, res, next) => {
 
 //get followed list
 exports.followers = (req, res, next) => {
-    const userId = req.body.id;
+    const userId = req.params.id;
     User.findOne({ _id: userId })
         .populate("followers", "name")
         .exec()
@@ -258,7 +260,7 @@ exports.Search = (req, res, next) => {
 
 //user deleting
 exports.User_Deleting = (req, res, next) => {
-    User.findOneAndDelete({ _id: req.body.id })
+    User.findOneAndDelete({ _id: req.params.id })
         .exec()
         .then(() => {
             res.status(200).json({ message: "user deleted" })

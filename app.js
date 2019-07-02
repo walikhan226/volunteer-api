@@ -8,6 +8,7 @@ const eventRoute = require("./routes/event");
 const postRoute = require("./routes/post");
 const commentRoute = require("./routes/comment");
 
+
 //set up express
 app.listen(process.env.PORT || 4000);
 console.log("Listening Now");
@@ -23,8 +24,9 @@ app.use(morgan('dev'));
 
 
 //setup bodyparser
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
+app.use(bodyparser.text());
 
 
 // disable cross orgigin resource sharing

@@ -17,7 +17,7 @@ router.put('/setting/changepassword', checkAuth, UserController.User_Updating_pa
 //put method to update exist user name
 router.put('/setting/changename', checkAuth, UserController.User_Updating_name);
 //get method to go profile
-router.get("/profile", checkAuth, UserController.User_profile);
+router.get("/profile", checkAuth, UserController.User_profile); 
 // post method about follow
 router.post("/follow", checkAuth, UserController.User_follow);
 // get method about unfollow 

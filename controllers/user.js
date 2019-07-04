@@ -130,18 +130,18 @@ exports.User_Updating_password = (req, res, next) => {
 
 //user profile
 exports.User_profile = (req, res, next) => {
-    const id = req.query.id
+const id = req.query.id
     User.findOne({ _id: id })
-        //.populate("post", 'content likes comment')
-        // .populate("event", 'name location date')
+//.populate("post", 'content likes comment')
+       // .populate("event", 'name location date')
         .then((result) => {
             console.log(result);
             res.status(200).json({
                 name: result.name,
                 avatar: result.avatar,
-                id: result.id,
-                post: result.post,
-                event: result.event,
+              //  id: result.id,
+              //  post: result.post,
+              //  event: result.event,
                 following: result.following,
                 followers: result.followers
             });

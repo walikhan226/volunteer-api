@@ -2,32 +2,52 @@ const Post = require("../models/post");
 const user = require('../models/user');
 
 
+
 //view all posts about what user follow without testing same problem from events line 7
 exports.home = (req, res, next) => {
     const userId = req.query.id;
+    
     user.findOne({ _id: userId })
-        .populate({
-            // get following posts
-            path: "following",
-            populate: {
-                path: "post",
+    .populate("following","post")
+       .then(result => {
+            /*    convert array into array of objects 
+            let posts =[]
+            posts=result.post;
+            posts.forEach(element => {
+                Post.findOne({_id:element})
+                .then(res=>{
+                    console.log(res.content);
+                })
+            });*/
+            res.status(200).json({ posts: result.post })
+       }) 
+
+        /*
+       // old way to fetch data 
+        user.findOne({ _id: userId })
+            .populate({
+                // get following posts
+                path: "following",
                 populate: {
-                    path: "comment"
-                }
-            }
-        })
-        .exec()
-        .then(result => {
-            let resd = []
-            resd[0] = result;
-            let red = resd.map((object) => {
-                console.log(object.following[0].post)
-                return {
-                    "postsOfFollowing": object.following[0].post,
+                    path: "post",
+                    populate: {
+                        path: "comment"
+                    }
                 }
             })
-            res.status(200).json({ red });
-        })
+            .populate("post")
+            .exec()
+            .then(result => {
+                let resd = []
+                resd[0] = result;
+                let red = resd.map((object) => {
+                    console.log(object.following[0].post)
+                    return {
+                        "postsOfFollowing": object.following[0].post,
+                    }
+                })
+                res.status(200).json({ post:red&&result.post });
+            })*/
         .catch(err => {
             console.log(err);
             res.status(500).json({ error: err });
@@ -39,11 +59,19 @@ exports.home = (req, res, next) => {
 exports.view_post = (req, res, next) => {
     const postId = req.query.postId;
     Post.findOne({ _id: postId })
-        .populate("comment", "content creator name")
-        .populate("creator","name",user)
+        .populate("comment", "content")
+        .populate("creator", "name", user)
+        .exec()
         .then(result => {
-            console.log(result);
-            res.status(200).json({ result });
+            let name = String(result.creator.name)
+            console.log(typeof name);
+            console.log(name)
+            res.status(200).json({
+                content: result.content,
+                name: name,
+                comment: result.comment,
+                likes: result.likes
+            });
         })
         .catch(err => {
             console.log(err);
@@ -58,8 +86,7 @@ exports.create_post = (req, res, next) => {
     const post = new Post({
         content: req.body.content,
         likes: 0,
-        creator: req.body.id,
-        image:req.body.image
+        creator: req.body.id
     })
     user.findOne({ _id: userId })
         .exec()

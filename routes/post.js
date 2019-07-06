@@ -4,7 +4,7 @@ const PostController = require("../controllers/post");
 const checkAuth = require('../middleware/check-auth');
 
 //get method about show all posts in database
-router.get("/home", checkAuth, PostController.home);
+router.get("/home", PostController.home);
 //get method about show single post
 router.get("/home/single", checkAuth, PostController.view_post);
 //post method about make new post

@@ -245,7 +245,8 @@ exports.User_unfollow = (req, res, next) => {
 
 //simple  search section 
 exports.Search = (req, res, next) => {
-    User.findOne({ name: req.body.name })
+    const name = req.body.name;
+    User.findOne({ name: name })
         .then(result => {
             if (result !== null) {
                 res.status(200).json({ result });

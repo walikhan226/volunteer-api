@@ -11,26 +11,42 @@ const eventSchema = new mongoose.Schema({
         _id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "users"
+        },
+        name: {
+            type: String,
+            ref: "users"
         }
     },
-    going: [
-        {
+    going: {
+        _id: {
             type: mongoose.Schema.ObjectId,
             ref: "users"
-        }
-    ],
-    not_interested: [
-        {
-            type: mongoose.Schema.ObjectId,
+        },
+        name: {
+            type: String,
             ref: "users"
         }
-    ],
-    interested: [
-        {
+    },
+    not_interested: {
+        _id: {
             type: mongoose.Schema.ObjectId,
             ref: "users"
+        },
+        name: {
+            type: String,
+            ref: "users"
         }
-    ]
+    },
+    interested: {
+        _id: {
+            type: mongoose.Schema.ObjectId,
+            ref: "users"
+        },
+        name: {
+            type: String,
+            ref: "users"
+        }
+    }
 });
 
 module.exports = mongoose.model("events", eventSchema);

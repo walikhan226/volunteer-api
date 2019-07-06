@@ -6,14 +6,22 @@ const commentSchema = mongoose.Schema({
         _id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "users"
+        },
+        name: {
+            type: String,
+            ref: "users"
         }
     },
-    post: [
-        {
+    post: {
+        id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "posts"
         },
-    ],
+        content: {
+            type: String,
+            ref: "posts"
+        }
+    },
     comment: [
         {
             type: mongoose.Schema.Types.ObjectId,

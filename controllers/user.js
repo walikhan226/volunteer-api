@@ -130,12 +130,12 @@ exports.User_Updating_password = (req, res, next) => {
 
 //user profile
 exports.User_profile = (req, res, next) => {
-const id = req.query.id
+    const id = req.query.id
     User.findOne({ _id: id })
         .populate("post", 'content likes comment')
         .populate("event", 'name location date')
         .then((result) => {
-            console.log(result);
+            console.log(typeof (result));
             res.status(200).json({
                 name: result.name,
                 avatar: result.avatar,
@@ -245,7 +245,8 @@ exports.User_unfollow = (req, res, next) => {
 
 //simple  search section 
 exports.Search = (req, res, next) => {
-    User.findOne({ name: req.body.name })
+    const name = req.body.name;
+    User.findOne({ name: name })
         .then(result => {
             if (result !== null) {
                 res.status(200).json({ result });

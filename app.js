@@ -26,7 +26,6 @@ app.use(morgan('dev'));
 //setup bodyparser
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
-app.use(bodyparser.text());
 
 
 // disable cross orgigin resource sharing

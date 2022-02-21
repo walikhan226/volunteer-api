@@ -3,13 +3,27 @@ const user = require("../models/user");
 
 //show all event about what user follow have some problem
 exports.get_all_events = (req, res, next) => {
-  // const userId = req.query.id;
+  const userId = req.query.id;
   user
-    .find()
-
+    .findOne({ _id: userId })
+    .populate({
+      // get following events
+      path: "following",
+      populate: {
+        path: "event",
+      },
+    })
     .exec()
     .then((result) => {
-      res.status(200).json({ data: result });
+      let resd = [];
+      resd[0] = result;
+      let red = resd.map((object) => {
+        console.log(object.following[0].event);
+        return {
+          eventsOfFollowing: object.following[0].event,
+        };
+      });
+      res.status(200).json({ red });
     })
     .catch((err) => {
       console.log(err);
@@ -50,16 +64,21 @@ exports.myEvent = (req, res, next) => {
 
 //create new event
 exports.create_new_event = (req, res, next) => {
-  console.log(req.body);
-  if (!req.body.id) {
-    return res.status(401).json({
-      error: "invalid params",
-    });
+  let user = await user.findOne({ _id: req.body.userid });
+
+  if (!user) {
+    return res.status(500).json({ error: "User does not exist" });
   }
+
+  if (user === "Volunteer") {
+    return res.status(500).json({ error: "You are not a creator" });
+  }
+
   const event = new Event({
+    eventType: user.usertype,
     name: req.body.name,
     location: req.body.location,
-    //date: req.body.date,
+    date: req.body.date,
     description: req.body.description,
     creator: req.body.id,
     image: req.body.image,
@@ -68,23 +87,15 @@ exports.create_new_event = (req, res, next) => {
     .findOne({ _id: req.body.id })
     .exec()
     .then((result) => {
-      if (user === "Volunteer") {
-        // next();
-        return res.status(401).json({ error: "You are not a creator" });
-      }
-      event.eventType = result.usertype;
       event.creator = result;
       event.save();
       result.event.push(event);
       result.save();
       console.log("done");
-      //   next();
       res.status(200).json({ event });
     })
     .catch((err) => {
-      console.log("error");
       console.log(err);
-      //    next();
       res.status(500).json({ error: err });
     });
 };

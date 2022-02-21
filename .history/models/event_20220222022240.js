@@ -4,10 +4,7 @@ const mongoose = require("mongoose");
 const eventSchema = new mongoose.Schema({
   name: String,
   location: String,
-  date: {
-    default: Date.now,
-    type: Date,
-  },
+  date: String,
   description: String,
   image: String,
 

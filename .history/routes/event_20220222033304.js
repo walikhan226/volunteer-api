@@ -4,7 +4,7 @@ const EventController = require("../controllers/event");
 const checkAuth = require("../middleware/check-auth");
 
 //get method about show all event
-router.get("/events", EventController.get_all_events);
+router.get("/events", checkAuth, EventController.get_all_events);
 //get method about show user events
 router.get("/myevents", checkAuth, EventController.myEvent);
 //get method about show single event

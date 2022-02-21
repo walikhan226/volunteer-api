@@ -4,12 +4,13 @@ const mongoose = require("mongoose");
 const eventSchema = new mongoose.Schema({
   name: String,
   location: String,
-  date: {
+  date: String,
+  description: String,
+  image: String,
+  createAt: {
     default: Date.now,
     type: Date,
   },
-  description: String,
-  image: String,
 
   eventType: {
     required: true,

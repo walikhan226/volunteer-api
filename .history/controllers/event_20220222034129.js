@@ -9,7 +9,15 @@ exports.get_all_events = (req, res, next) => {
 
     .exec()
     .then((result) => {
-      res.status(200).json({ data: result });
+      let resd = [];
+      resd[0] = result;
+      let red = resd.map((object) => {
+        console.log(object.following[0].event);
+        return {
+          eventsOfFollowing: object.following[0].event,
+        };
+      });
+      res.status(200).json({ red });
     })
     .catch((err) => {
       console.log(err);

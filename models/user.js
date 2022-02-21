@@ -1,47 +1,51 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    match:
+      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
 
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+  usertype: {
+    required: true,
+    type: String,
+  },
+  post: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "posts",
     },
-    password: {
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
+  ],
 
+  event: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "events", // it point to collection
     },
-    post: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "posts"
-        }
-    ],
-
-    event: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "events"     // it point to collection
-        }
-    ],
-    followers: [
-        {
-            type: mongoose.Schema.ObjectId,
-            ref: "users"
-        }
-    ],
-    following: [
-        {
-            type: mongoose.Schema.ObjectId,
-            ref: "users"
-        }
-    ],
-    avatar: String
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "users",
+    },
+  ],
+  following: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "users",
+    },
+  ],
+  avatar: String,
 });
-module.exports = mongoose.model('users', userSchema);
+module.exports = mongoose.model("users", userSchema);
